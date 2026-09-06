@@ -463,9 +463,7 @@ div[data-baseweb="base-input"] > div {
 st.markdown("""
 <div class="hero">
 
-<div class="hero-badge">
-🤖 POWERED BY QWEN · HUGGING FACE
-</div>
+
 
 <h1>CodeMentor AI</h1>
 
