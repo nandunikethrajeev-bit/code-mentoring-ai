@@ -103,21 +103,47 @@ st.markdown("""
     }
 }
 
-/* Feature cards with rotating border glow */
+/* Feature cards - equal width and perfectly aligned inside Streamlit columns */
+[data-testid="stHorizontalBlock"] {
+    width: 100% !important;
+    align-items: stretch !important;
+}
+
+[data-testid="stHorizontalBlock"] > [data-testid="column"] {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 0 !important;
+}
+
+[data-testid="stHorizontalBlock"] > [data-testid="column"] > div {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
 .feature-card {
     position: relative;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+
     border-radius: 18px;
-    padding: 22px;
-    height: 145px;
+    padding: 22px 24px;
+    min-height: 170px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     backdrop-filter: blur(12px);
     transition: transform 0.3s ease;
-    
-    /* 1. Sharp rotating border beam (only in 2px border region - cool cyber palette, no red) */
+
+    /* Sharp rotating border beam - cool cyber palette, no red */
     border: 2px solid transparent;
-    background: 
-        /* Inner solid dark background keeps interior clean and readable */
-        linear-gradient(135deg, rgba(14, 17, 30, 0.95), rgba(9, 11, 20, 0.98)) padding-box,
-        /* Rotating conic gradient beam on the border */
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14, 17, 30, 0.95),
+            rgba(9, 11, 20, 0.98)
+        ) padding-box,
         conic-gradient(
             from var(--border-angle),
             rgba(99, 102, 241, 0.15) 0deg,
@@ -164,19 +190,24 @@ st.markdown("""
 
 .feature-icon {
     font-size: 28px;
+    line-height: 1;
+    margin-bottom: 2px;
 }
 
 .feature-title {
     color: white;
     font-weight: 700;
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 17px;
+    margin-top: 8px;
+    margin-bottom: 6px;
+    line-height: 1.25;
 }
 
 .feature-text {
     color: #9ca3af;
-    font-size: 13px;
-    margin-top: 5px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    margin: 0;
 }
 
 /* Section headings */
@@ -220,7 +251,6 @@ label {
         0 0 8px rgba(99, 102, 241, 0.45),
         0 0 18px rgba(139, 92, 246, 0.30),
         0 0 28px rgba(6, 182, 212, 0.20) !important;
-}
 }
 
 div[data-baseweb="select"] > div:focus-within,
