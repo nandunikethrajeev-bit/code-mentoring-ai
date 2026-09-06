@@ -31,6 +31,11 @@ st.markdown("""
     font-family: 'Inter', sans-serif;
 }
 
+::selection {
+    background: rgba(99, 102, 241, 0.4) !important;
+    color: #ffffff !important;
+}
+
 .stApp {
     background:
         radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.18), transparent 30%),
@@ -79,20 +84,82 @@ st.markdown("""
     margin-top: 14px;
 }
 
-/* Feature cards */
+/* ------------------------------------------------------------- */
+/* ROTATING GLOWING BORDER ANIMATION SETUP                       */
+/* ------------------------------------------------------------- */
+
+@property --border-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes rotate-border {
+    0% {
+        --border-angle: 0deg;
+    }
+    100% {
+        --border-angle: 360deg;
+    }
+}
+
+/* Feature cards with rotating border glow */
 .feature-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
     border-radius: 18px;
     padding: 22px;
     height: 145px;
     backdrop-filter: blur(12px);
-    transition: 0.3s;
+    transition: transform 0.3s ease;
+    
+    /* 1. Sharp rotating border beam (only in 2px border region - cool cyber palette, no red) */
+    border: 2px solid transparent;
+    background: 
+        /* Inner solid dark background keeps interior clean and readable */
+        linear-gradient(135deg, rgba(14, 17, 30, 0.95), rgba(9, 11, 20, 0.98)) padding-box,
+        /* Rotating conic gradient beam on the border */
+        conic-gradient(
+            from var(--border-angle),
+            rgba(99, 102, 241, 0.15) 0deg,
+            #6366f1 60deg,
+            #8b5cf6 120deg,
+            #06b6d4 180deg,
+            #3b82f6 240deg,
+            rgba(99, 102, 241, 0.15) 360deg
+        ) border-box;
+    animation: rotate-border 4s linear infinite;
+}
+
+/* 2. Outer glowing aura rotating in sync with the border */
+.feature-card::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 20px;
+    background: conic-gradient(
+        from var(--border-angle),
+        transparent 0deg,
+        rgba(99, 102, 241, 0.7) 60deg,
+        rgba(139, 92, 246, 0.8) 120deg,
+        rgba(6, 182, 212, 0.8) 180deg,
+        rgba(59, 130, 246, 0.7) 240deg,
+        transparent 360deg
+    );
+    z-index: -1;
+    filter: blur(14px);
+    opacity: 0.55;
+    animation: rotate-border 4s linear infinite;
+    pointer-events: none;
+    transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .feature-card:hover {
-    border-color: rgba(129, 140, 248, 0.5);
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+}
+
+.feature-card:hover::after {
+    opacity: 0.95;
+    filter: blur(18px);
 }
 
 .feature-icon {
@@ -127,26 +194,115 @@ label {
     font-weight: 600 !important;
 }
 
-/* Select boxes */
+/* Select boxes - remove any default red focus/borders */
 div[data-baseweb="select"] > div {
     background: rgba(255,255,255,0.045) !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
+    border: 1px solid rgba(129, 140, 248, 0.25) !important;
     border-radius: 12px !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
-/* Text area */
-textarea {
-    background: rgba(255,255,255,0.035) !important;
+div[data-baseweb="select"] > div:focus-within,
+div[data-baseweb="select"] > div:hover {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 12px rgba(129, 140, 248, 0.25) !important;
+}
+
+/* ------------------------------------------------------------- */
+/* CODE TEXT AREA: ROTATING BORDER GLOW (NO RED EMISSION)        */
+/* ------------------------------------------------------------- */
+
+/* Suppress all Streamlit default red borders, outlines and focus rings */
+.stTextArea,
+.stTextArea div[data-baseweb="textarea"],
+.stTextArea div[data-baseweb="base-input"],
+.stTextArea div[data-baseweb="textarea"]:focus-within,
+.stTextArea div[data-baseweb="base-input"]:focus-within {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* The code textarea box: rotating border glow strictly on the borders */
+div[data-baseweb="textarea"] {
+    position: relative !important;
+    border-radius: 16px !important;
+    border: 2px solid transparent !important;
+    background: 
+        /* Solid dark interior keeps code typing area clean & readable */
+        linear-gradient(135deg, rgba(14, 17, 30, 0.96), rgba(9, 11, 20, 0.98)) padding-box,
+        /* Rotating cool neon beam strictly on the border - no red! */
+        conic-gradient(
+            from var(--border-angle),
+            rgba(99, 102, 241, 0.15) 0deg,
+            #6366f1 60deg,
+            #8b5cf6 120deg,
+            #06b6d4 180deg,
+            #3b82f6 240deg,
+            rgba(99, 102, 241, 0.15) 360deg
+        ) border-box !important;
+    animation: rotate-border 4s linear infinite !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Outer glowing halo emanating strictly from the borders */
+div[data-baseweb="textarea"]::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: -2px !important;
+    border-radius: 18px !important;
+    background: conic-gradient(
+        from var(--border-angle),
+        transparent 0deg,
+        rgba(99, 102, 241, 0.7) 60deg,
+        rgba(139, 92, 246, 0.8) 120deg,
+        rgba(6, 182, 212, 0.8) 180deg,
+        rgba(59, 130, 246, 0.7) 240deg,
+        transparent 360deg
+    ) !important;
+    z-index: -1 !important;
+    filter: blur(14px) !important;
+    opacity: 0.55 !important;
+    animation: rotate-border 4s linear infinite !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease, filter 0.3s ease !important;
+}
+
+div[data-baseweb="textarea"]:focus-within::after,
+div[data-baseweb="textarea"]:hover::after {
+    opacity: 0.9 !important;
+    filter: blur(18px) !important;
+}
+
+/* Internal base input wrapper */
+div[data-baseweb="base-input"],
+div[data-baseweb="base-input"] > div {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* The actual textarea element */
+.stTextArea textarea {
+    background: transparent !important;
     color: #e4e4e7 !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
-    border-radius: 14px !important;
-    font-family: 'Consolas', monospace !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
     font-size: 14px !important;
+    line-height: 1.6 !important;
+    padding: 18px !important;
+    resize: vertical !important;
 }
 
-textarea:focus {
-    border: 1px solid #818cf8 !important;
-    box-shadow: 0 0 15px rgba(129,140,248,0.18) !important;
+.stTextArea textarea:focus,
+.stTextArea textarea:focus-visible {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Analyze button */
@@ -165,16 +321,60 @@ textarea:focus {
 .stButton > button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(99,102,241,0.35);
+    border-color: #818cf8;
+    color: white;
 }
 
-/* Result box */
+.stButton > button:active,
+.stButton > button:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4) !important;
+    color: white !important;
+    outline: none !important;
+}
+
+/* Result box with matching cool cyber rotating border glow */
 .result-box {
-    background: rgba(255,255,255,0.035);
-    border: 1px solid rgba(129,140,248,0.25);
+    position: relative;
     border-radius: 18px;
     padding: 28px;
     margin-top: 25px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(135deg, rgba(14, 17, 30, 0.95), rgba(9, 11, 20, 0.98)) padding-box,
+        conic-gradient(
+            from var(--border-angle),
+            rgba(99, 102, 241, 0.15) 0deg,
+            #6366f1 60deg,
+            #8b5cf6 120deg,
+            #06b6d4 180deg,
+            #3b82f6 240deg,
+            rgba(99, 102, 241, 0.15) 360deg
+        ) border-box;
+    animation: rotate-border 4s linear infinite;
+}
+
+.result-box::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 20px;
+    background: conic-gradient(
+        from var(--border-angle),
+        transparent 0deg,
+        rgba(99, 102, 241, 0.7) 60deg,
+        rgba(139, 92, 246, 0.8) 120deg,
+        rgba(6, 182, 212, 0.8) 180deg,
+        rgba(59, 130, 246, 0.7) 240deg,
+        transparent 360deg
+    );
+    z-index: -1;
+    filter: blur(16px);
+    opacity: 0.6;
+    animation: rotate-border 4s linear infinite;
+    pointer-events: none;
 }
 
 /* Footer */
