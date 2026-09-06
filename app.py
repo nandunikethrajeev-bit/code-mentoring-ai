@@ -619,11 +619,3 @@ if st.button("🚀  Analyze My Code"):
 
 
 
-st.markdown("""
-<div class="footer">
-    Built with ❤️ using <span>Python</span> ·
-    <span>Streamlit</span> ·
-    <span>Hugging Face</span> ·
-    <span>Qwen</span>
-</div>
-""", unsafe_allow_html=True)
