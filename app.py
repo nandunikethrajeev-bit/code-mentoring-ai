@@ -246,16 +246,23 @@ div[data-baseweb="select"] > div:hover {
 
 /* Suppress all Streamlit default red borders, outlines and focus rings */
 .stTextArea,
-.stTextArea div[data-baseweb="textarea"],
-.stTextArea div[data-baseweb="base-input"],
-.stTextArea div[data-baseweb="textarea"]:focus-within,
-.stTextArea div[data-baseweb="base-input"]:focus-within {
+.stTextArea [data-testid="stTextAreaRootElement"],
+.stTextArea [data-testid="stTextAreaRootElement"]:focus-within,
+.stTextArea > div:has(textarea),
+.stTextArea > div:has(textarea):focus-within,
+.stTextArea textarea,
+.stTextArea textarea:focus,
+.stTextArea textarea:focus-visible,
+div[data-baseweb="textarea"],
+div[data-baseweb="textarea"]:focus-within {
     border-color: transparent !important;
     box-shadow: none !important;
     outline: none !important;
 }
 
 /* The code textarea box: continuous rotating glowing border & hover lift */
+[data-testid="stTextAreaRootElement"],
+.stTextArea > div:has(textarea),
 div[data-baseweb="textarea"] {
     position: relative !important;
     border-radius: 16px !important;
@@ -278,6 +285,8 @@ div[data-baseweb="textarea"] {
 }
 
 /* Outer glowing aura rotating continuously around the border */
+[data-testid="stTextAreaRootElement"]::after,
+.stTextArea > div:has(textarea)::after,
 div[data-baseweb="textarea"]::after {
     content: '' !important;
     position: absolute !important;
@@ -301,26 +310,35 @@ div[data-baseweb="textarea"]::after {
 }
 
 /* Hover effect: smooth lift and enhanced glow transition */
+[data-testid="stTextAreaRootElement"]:hover,
+.stTextArea > div:has(textarea):hover,
 div[data-baseweb="textarea"]:hover {
     transform: translateY(-2px) !important;
 }
 
+[data-testid="stTextAreaRootElement"]:hover::after,
+.stTextArea > div:has(textarea):hover::after,
 div[data-baseweb="textarea"]:hover::after {
     opacity: 0.85 !important;
     filter: blur(18px) !important;
 }
 
 /* Focus effect: brighter glow when typing */
+[data-testid="stTextAreaRootElement"]:focus-within,
+.stTextArea > div:has(textarea):focus-within,
 div[data-baseweb="textarea"]:focus-within {
     box-shadow: 0 0 15px rgba(99, 102, 241, 0.3), 0 0 30px rgba(6, 182, 212, 0.2) !important;
 }
 
+[data-testid="stTextAreaRootElement"]:focus-within::after,
+.stTextArea > div:has(textarea):focus-within::after,
 div[data-baseweb="textarea"]:focus-within::after {
     opacity: 0.95 !important;
     filter: blur(20px) !important;
 }
 
 /* Internal Streamlit wrapper - keep transparent */
+[data-testid="stTextAreaRootElement"] > div,
 div[data-baseweb="base-input"],
 div[data-baseweb="base-input"] > div {
     background: transparent !important;
