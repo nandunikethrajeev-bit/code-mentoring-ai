@@ -195,12 +195,32 @@ label {
 }
 
 /* Select boxes - remove any default red focus/borders */
-div[data-baseweb="select"] > div {
-    background: rgba(255,255,255,0.045) !important;
-    border: 1px solid rgba(129, 140, 248, 0.25) !important;
-    border-radius: 12px !important;
-    box-shadow: none !important;
-    outline: none !important;
+/* Replace red focus border with CodeMentor glow */
+.stTextArea div[data-baseweb="textarea"]:focus-within {
+    border: 2px solid transparent !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14, 17, 30, 0.96),
+            rgba(9, 11, 20, 0.98)
+        ) padding-box,
+        conic-gradient(
+            from var(--border-angle),
+            #6366f1,
+            #8b5cf6,
+            #06b6d4,
+            #3b82f6,
+            #6366f1
+        ) border-box !important;
+
+    animation: rotate-border 3s linear infinite !important;
+
+    box-shadow:
+        0 0 8px rgba(99, 102, 241, 0.45),
+        0 0 18px rgba(139, 92, 246, 0.30),
+        0 0 28px rgba(6, 182, 212, 0.20) !important;
+}
 }
 
 div[data-baseweb="select"] > div:focus-within,
@@ -210,72 +230,82 @@ div[data-baseweb="select"] > div:hover {
 }
 
 /* ------------------------------------------------------------- */
-/* CODE TEXT AREA: ROTATING BORDER GLOW (NO RED EMISSION)        */
-/* ------------------------------------------------------------- */
+/* CODE TEXT AREA: CLICK-ONLY MIXED COLOUR BORDER GLOW */
 
-/* Suppress all Streamlit default red borders, outlines and focus rings */
+/* Remove Streamlit's default red focus styling */
 .stTextArea,
 .stTextArea div[data-baseweb="textarea"],
 .stTextArea div[data-baseweb="base-input"],
 .stTextArea div[data-baseweb="textarea"]:focus-within,
 .stTextArea div[data-baseweb="base-input"]:focus-within {
-    border-color: transparent !important;
-    box-shadow: none !important;
     outline: none !important;
+    box-shadow: none !important;
 }
 
-/* The code textarea box: rotating border glow strictly on the borders */
+/* Clean dark code box when not focused */
 div[data-baseweb="textarea"] {
     position: relative !important;
     border-radius: 16px !important;
-    border: 2px solid transparent !important;
-    background: 
-        /* Solid dark interior keeps code typing area clean & readable */
-        linear-gradient(135deg, rgba(14, 17, 30, 0.96), rgba(9, 11, 20, 0.98)) padding-box,
-        /* Rotating cool neon beam strictly on the border - no red! */
-        conic-gradient(
-            from var(--border-angle),
-            rgba(99, 102, 241, 0.15) 0deg,
-            #6366f1 60deg,
-            #8b5cf6 120deg,
-            #06b6d4 180deg,
-            #3b82f6 240deg,
-            rgba(99, 102, 241, 0.15) 360deg
-        ) border-box !important;
-    animation: rotate-border 4s linear infinite !important;
-    transition: all 0.3s ease !important;
+    border: 2px solid rgba(129, 140, 248, 0.25) !important;
+    background: linear-gradient(
+        135deg,
+        rgba(14, 17, 30, 0.96),
+        rgba(9, 11, 20, 0.98)
+    ) padding-box !important;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
 }
 
-/* Outer glowing halo emanating strictly from the borders */
+/* Mixed webpage colours appear ONLY when clicked inside */
+div[data-baseweb="textarea"]:focus-within {
+    border: 2px solid transparent !important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14, 17, 30, 0.96),
+            rgba(9, 11, 20, 0.98)
+        ) padding-box,
+        conic-gradient(
+            from var(--border-angle),
+            #6366f1 0deg,
+            #8b5cf6 90deg,
+            #06b6d4 180deg,
+            #3b82f6 270deg,
+            #6366f1 360deg
+        ) border-box !important;
+    animation: rotate-border 3s linear infinite !important;
+    box-shadow:
+        0 0 8px rgba(99, 102, 241, 0.35),
+        0 0 18px rgba(139, 92, 246, 0.25),
+        0 0 28px rgba(6, 182, 212, 0.18) !important;
+}
+
+/* Glowing aura stays outside the box */
 div[data-baseweb="textarea"]::after {
     content: '' !important;
     position: absolute !important;
-    inset: -2px !important;
+    inset: -3px !important;
     border-radius: 18px !important;
     background: conic-gradient(
         from var(--border-angle),
         transparent 0deg,
-        rgba(99, 102, 241, 0.7) 60deg,
-        rgba(139, 92, 246, 0.8) 120deg,
-        rgba(6, 182, 212, 0.8) 180deg,
-        rgba(59, 130, 246, 0.7) 240deg,
+        rgba(99, 102, 241, 0.8) 80deg,
+        rgba(139, 92, 246, 0.8) 160deg,
+        rgba(6, 182, 212, 0.8) 240deg,
+        rgba(59, 130, 246, 0.7) 320deg,
         transparent 360deg
     ) !important;
+    filter: blur(12px) !important;
+    opacity: 0 !important;
     z-index: -1 !important;
-    filter: blur(14px) !important;
-    opacity: 0.55 !important;
-    animation: rotate-border 4s linear infinite !important;
     pointer-events: none !important;
-    transition: opacity 0.3s ease, filter 0.3s ease !important;
+    animation: rotate-border 3s linear infinite !important;
 }
 
-div[data-baseweb="textarea"]:focus-within::after,
-div[data-baseweb="textarea"]:hover::after {
-    opacity: 0.9 !important;
-    filter: blur(18px) !important;
+div[data-baseweb="textarea"]:focus-within::after {
+    opacity: 0.75 !important;
 }
 
-/* Internal base input wrapper */
+/* Internal Streamlit wrapper */
 div[data-baseweb="base-input"],
 div[data-baseweb="base-input"] > div {
     background: transparent !important;
@@ -284,7 +314,7 @@ div[data-baseweb="base-input"] > div {
     outline: none !important;
 }
 
-/* The actual textarea element */
+/* Actual textarea — clean interior */
 .stTextArea textarea {
     background: transparent !important;
     color: #e4e4e7 !important;
@@ -302,7 +332,7 @@ div[data-baseweb="base-input"] > div {
 .stTextArea textarea:focus-visible {
     border: none !important;
     outline: none !important;
-    box-shadow: none !important;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.35) !important;
 }
 
 /* Analyze button */
@@ -474,7 +504,10 @@ with col2:
             "Explain Code",
             "Find Bugs",
             "Improve Code",
-            "Explain Error"
+            "Explain Error",
+            "Code Quality Score",
+            "Complexity Analysis",
+            "Teach Me"
         ]
     )
 
@@ -506,16 +539,27 @@ if st.button("🚀  Analyze My Code"):
 
     else:
 
+        task_instructions = {
+            "Explain Code": "Explain the code simply, step-by-step, and summarize its overall flow.",
+            "Find Bugs": "Find syntax, logical, runtime, edge-case, and important practice issues. Explain and fix each issue.",
+            "Improve Code": "Suggest practical improvements to readability, structure, performance, maintainability, and style without changing intended behavior.",
+            "Explain Error": "Identify the likely cause, explain it simply, and give clear steps to fix it. If no error is supplied, inspect likely failure points.",
+            "Code Quality Score": "Give a score from 0 to 100. Evaluate correctness, readability, maintainability, efficiency, structure, naming, and error handling. Give strengths, weaknesses, and top improvements.",
+            "Complexity Analysis": "Analyze time and space complexity using Big-O. Explain the main operations and overall complexity in beginner-friendly terms, and mention possible optimizations.",
+            "Teach Me": "Teach this code like a beginner lesson: big picture, step-by-step explanation, important concepts, a small example, and 2-3 quick questions to test understanding."
+        }
+
         prompt = (
             "You are CodeMentor AI, an expert programming mentor "
             "who explains concepts clearly to beginners.\n\n"
             f"Programming Language: {language}\n"
-            f"Requested Task: {task}\n\n"
+            f"Requested Task: {task}\n"
+            f"Task Instructions: {task_instructions[task]}\n\n"
             "User's Code:\n"
             f"{code}\n\n"
-            "Provide a useful, accurate and beginner-friendly analysis. "
-            "Use headings and bullet points where appropriate. "
-            "If there are bugs, clearly identify them and explain how to fix them."
+            "Provide a useful, accurate and beginner-friendly response. "
+            "Use clear headings, bullet points, and code blocks where appropriate. "
+            "Do not invent errors or behavior that is not supported by the code."
         )
 
         with st.spinner("🤖 CodeMentor is thinking..."):
@@ -533,9 +577,9 @@ if st.button("🚀  Analyze My Code"):
 
         answer = response.choices[0].message.content
 
-        st.markdown("""
+        st.markdown(f"""
         <div class="result-box">
-            <h2>✨ CodeMentor's Analysis</h2>
+            <h2>✨ {task}</h2>
         </div>
         """, unsafe_allow_html=True)
 
