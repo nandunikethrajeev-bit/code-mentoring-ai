@@ -1,0 +1,354 @@
+import os
+import streamlit as st
+from dotenv import load_dotenv
+from huggingface_hub import InferenceClient
+
+
+load_dotenv()
+
+
+client = InferenceClient(
+    api_key=os.getenv("HF_TOKEN"),
+    provider="auto"
+)
+
+
+st.set_page_config(
+    page_title="CodeMentor AI",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+
+
+st.markdown("""
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+.stApp {
+    background:
+        radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.18), transparent 30%),
+        radial-gradient(circle at 90% 20%, rgba(168, 85, 247, 0.15), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.10), transparent 35%),
+        #080a12;
+}
+
+/* Remove default top padding */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    max-width: 1250px;
+}
+
+/* Hero section */
+.hero {
+    text-align: center;
+    padding: 35px 20px 30px 20px;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    color: #a5b4fc;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.hero h1 {
+    font-size: 58px;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(90deg, #ffffff, #a5b4fc, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    color: #a1a1aa;
+    font-size: 18px;
+    margin-top: 14px;
+}
+
+/* Feature cards */
+.feature-card {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 22px;
+    height: 145px;
+    backdrop-filter: blur(12px);
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    border-color: rgba(129, 140, 248, 0.5);
+    transform: translateY(-3px);
+}
+
+.feature-icon {
+    font-size: 28px;
+}
+
+.feature-title {
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.feature-text {
+    color: #9ca3af;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* Section headings */
+.section-title {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* Labels */
+label {
+    color: #d4d4d8 !important;
+    font-weight: 600 !important;
+}
+
+/* Select boxes */
+div[data-baseweb="select"] > div {
+    background: rgba(255,255,255,0.045) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 12px !important;
+}
+
+/* Text area */
+textarea {
+    background: rgba(255,255,255,0.035) !important;
+    color: #e4e4e7 !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 14px !important;
+    font-family: 'Consolas', monospace !important;
+    font-size: 14px !important;
+}
+
+textarea:focus {
+    border: 1px solid #818cf8 !important;
+    box-shadow: 0 0 15px rgba(129,140,248,0.18) !important;
+}
+
+/* Analyze button */
+.stButton > button {
+    width: 100%;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid rgba(129,140,248,0.5);
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    transition: 0.25s;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(99,102,241,0.35);
+}
+
+/* Result box */
+.result-box {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(129,140,248,0.25);
+    border-radius: 18px;
+    padding: 28px;
+    margin-top: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: #71717a;
+    font-size: 13px;
+    margin-top: 50px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer span {
+    color: #a5b4fc;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+
+
+st.markdown("""
+<div class="hero">
+
+<div class="hero-badge">
+🤖 POWERED BY QWEN · HUGGING FACE
+</div>
+
+<h1>CodeMentor AI</h1>
+
+<p>
+Understand. Debug. Improve. <br>
+Your intelligent coding companion for learning and writing better code.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Understand Code</div>
+        <div class="feature-text">
+            Get simple, beginner-friendly explanations.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="feature-icon">🐛</div>
+        <div class="feature-title">Find Bugs</div>
+        <div class="feature-text">
+            Detect problems and understand why they occur.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Improve Code</div>
+        <div class="feature-text">
+            Discover cleaner and better ways to write your code.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+
+st.markdown(
+    '<div class="section-title">🛠️ Configure your analysis</div>',
+    unsafe_allow_html=True
+)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    language = st.selectbox(
+        "Programming Language",
+        ["Python", "C", "C++", "Java"]
+    )
+
+with col2:
+    task = st.selectbox(
+        "What should CodeMentor do?",
+        [
+            "Explain Code",
+            "Find Bugs",
+            "Improve Code",
+            "Explain Error"
+        ]
+    )
+
+
+st.markdown(
+    '<div class="section-title">💻 Your Code</div>',
+    unsafe_allow_html=True
+)
+
+code = st.text_area(
+    "Paste your code below",
+    height=300,
+    placeholder="""// Example
+
+def add(a, b):
+    return a + b
+
+print(add(10, 20))"""
+)
+
+
+
+
+if st.button("🚀  Analyze My Code"):
+
+    if not code.strip():
+
+        st.warning("⚠️ Please paste some code first.")
+
+    else:
+
+        prompt = (
+            "You are CodeMentor AI, an expert programming mentor "
+            "who explains concepts clearly to beginners.\n\n"
+            f"Programming Language: {language}\n"
+            f"Requested Task: {task}\n\n"
+            "User's Code:\n"
+            f"{code}\n\n"
+            "Provide a useful, accurate and beginner-friendly analysis. "
+            "Use headings and bullet points where appropriate. "
+            "If there are bugs, clearly identify them and explain how to fix them."
+        )
+
+        with st.spinner("🤖 CodeMentor is thinking..."):
+
+            response = client.chat.completions.create(
+                model="Qwen/Qwen3-4B-Instruct-2507",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                max_tokens=1200
+            )
+
+        answer = response.choices[0].message.content
+
+        st.markdown("""
+        <div class="result-box">
+            <h2>✨ CodeMentor's Analysis</h2>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown(answer)
+
+
+
+
+st.markdown("""
+<div class="footer">
+    Built with ❤️ using <span>Python</span> ·
+    <span>Streamlit</span> ·
+    <span>Hugging Face</span> ·
+    <span>Qwen</span>
+</div>
+""", unsafe_allow_html=True)
