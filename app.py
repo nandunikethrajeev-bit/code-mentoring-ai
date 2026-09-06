@@ -226,31 +226,12 @@ label {
 }
 
 /* Select boxes - remove any default red focus/borders */
-/* Replace red focus border with CodeMentor glow */
-.stTextArea div[data-baseweb="textarea"]:focus-within {
-    border: 2px solid transparent !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(14, 17, 30, 0.96),
-            rgba(9, 11, 20, 0.98)
-        ) padding-box,
-        conic-gradient(
-            from var(--border-angle),
-            #6366f1,
-            #8b5cf6,
-            #06b6d4,
-            #3b82f6,
-            #6366f1
-        ) border-box !important;
-
-    animation: rotate-border 3s linear infinite !important;
-
-    box-shadow:
-        0 0 8px rgba(99, 102, 241, 0.45),
-        0 0 18px rgba(139, 92, 246, 0.30),
-        0 0 28px rgba(6, 182, 212, 0.20) !important;
+div[data-baseweb="select"] > div {
+    background: rgba(255,255,255,0.045) !important;
+    border: 1px solid rgba(129, 140, 248, 0.25) !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 div[data-baseweb="select"] > div:focus-within,
@@ -260,82 +241,86 @@ div[data-baseweb="select"] > div:hover {
 }
 
 /* ------------------------------------------------------------- */
-/* CODE TEXT AREA: CLICK-ONLY MIXED COLOUR BORDER GLOW */
+/* CODE TEXT AREA: CONTINUOUS ROTATING GLOWING BORDER & TRANSITION */
+/* ------------------------------------------------------------- */
 
-/* Remove Streamlit's default red focus styling */
+/* Suppress all Streamlit default red borders, outlines and focus rings */
 .stTextArea,
 .stTextArea div[data-baseweb="textarea"],
 .stTextArea div[data-baseweb="base-input"],
 .stTextArea div[data-baseweb="textarea"]:focus-within,
 .stTextArea div[data-baseweb="base-input"]:focus-within {
-    outline: none !important;
+    border-color: transparent !important;
     box-shadow: none !important;
+    outline: none !important;
 }
 
-/* Clean dark code box when not focused */
+/* The code textarea box: continuous rotating glowing border & hover lift */
 div[data-baseweb="textarea"] {
     position: relative !important;
     border-radius: 16px !important;
-    border: 2px solid rgba(129, 140, 248, 0.25) !important;
-    background: linear-gradient(
-        135deg,
-        rgba(14, 17, 30, 0.96),
-        rgba(9, 11, 20, 0.98)
-    ) padding-box !important;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
-}
-
-/* Mixed webpage colours appear ONLY when clicked inside */
-div[data-baseweb="textarea"]:focus-within {
     border: 2px solid transparent !important;
-    background:
-        linear-gradient(
-            135deg,
-            rgba(14, 17, 30, 0.96),
-            rgba(9, 11, 20, 0.98)
-        ) padding-box,
+    background: 
+        /* Solid dark interior keeps code typing area clean & readable */
+        linear-gradient(135deg, rgba(14, 17, 30, 0.96), rgba(9, 11, 20, 0.98)) padding-box,
+        /* Rotating cool neon beam strictly on the border - no red! */
         conic-gradient(
             from var(--border-angle),
-            #6366f1 0deg,
-            #8b5cf6 90deg,
+            rgba(99, 102, 241, 0.15) 0deg,
+            #6366f1 60deg,
+            #8b5cf6 120deg,
             #06b6d4 180deg,
-            #3b82f6 270deg,
-            #6366f1 360deg
+            #3b82f6 240deg,
+            rgba(99, 102, 241, 0.15) 360deg
         ) border-box !important;
-    animation: rotate-border 3s linear infinite !important;
-    box-shadow:
-        0 0 8px rgba(99, 102, 241, 0.35),
-        0 0 18px rgba(139, 92, 246, 0.25),
-        0 0 28px rgba(6, 182, 212, 0.18) !important;
+    animation: rotate-border 4s linear infinite !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
 }
 
-/* Glowing aura stays outside the box */
+/* Outer glowing aura rotating continuously around the border */
 div[data-baseweb="textarea"]::after {
     content: '' !important;
     position: absolute !important;
-    inset: -3px !important;
+    inset: -2px !important;
     border-radius: 18px !important;
     background: conic-gradient(
         from var(--border-angle),
         transparent 0deg,
-        rgba(99, 102, 241, 0.8) 80deg,
-        rgba(139, 92, 246, 0.8) 160deg,
-        rgba(6, 182, 212, 0.8) 240deg,
-        rgba(59, 130, 246, 0.7) 320deg,
+        rgba(99, 102, 241, 0.7) 60deg,
+        rgba(139, 92, 246, 0.8) 120deg,
+        rgba(6, 182, 212, 0.8) 180deg,
+        rgba(59, 130, 246, 0.7) 240deg,
         transparent 360deg
     ) !important;
-    filter: blur(12px) !important;
-    opacity: 0 !important;
     z-index: -1 !important;
+    filter: blur(14px) !important;
+    opacity: 0.55 !important;
+    animation: rotate-border 4s linear infinite !important;
     pointer-events: none !important;
-    animation: rotate-border 3s linear infinite !important;
+    transition: opacity 0.3s ease, filter 0.3s ease !important;
+}
+
+/* Hover effect: smooth lift and enhanced glow transition */
+div[data-baseweb="textarea"]:hover {
+    transform: translateY(-2px) !important;
+}
+
+div[data-baseweb="textarea"]:hover::after {
+    opacity: 0.85 !important;
+    filter: blur(18px) !important;
+}
+
+/* Focus effect: brighter glow when typing */
+div[data-baseweb="textarea"]:focus-within {
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3), 0 0 30px rgba(6, 182, 212, 0.2) !important;
 }
 
 div[data-baseweb="textarea"]:focus-within::after {
-    opacity: 0.75 !important;
+    opacity: 0.95 !important;
+    filter: blur(20px) !important;
 }
 
-/* Internal Streamlit wrapper */
+/* Internal Streamlit wrapper - keep transparent */
 div[data-baseweb="base-input"],
 div[data-baseweb="base-input"] > div {
     background: transparent !important;
@@ -344,7 +329,7 @@ div[data-baseweb="base-input"] > div {
     outline: none !important;
 }
 
-/* Actual textarea — clean interior */
+/* Actual textarea — clean typing interior */
 .stTextArea textarea {
     background: transparent !important;
     color: #e4e4e7 !important;
@@ -362,7 +347,7 @@ div[data-baseweb="base-input"] > div {
 .stTextArea textarea:focus-visible {
     border: none !important;
     outline: none !important;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.35) !important;
+    box-shadow: none !important;
 }
 
 /* Analyze button */
